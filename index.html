@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>6학년 수학 - 비례식과 비례배분 수행평가 연습 학습지</title>
+  <!-- Tailwind CSS 로드 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 가독성 좋은 한글 웹폰트 (Noto Sans KR, Jua) 로드 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* 기본 테마 및 타이포그래피 설정 */
+    :root {
+      --bg-cream: #FFFDF7;
+      --pastel-sky: #E0F2FE;
+      --pastel-sky-border: #7DD3FC;
+      --pastel-mint: #DCFCE7;
+      --pastel-mint-border: #6EE7B7;
+      --pastel-yellow: #FEF9C3;
+      --pastel-yellow-border: #FACC15;
+      --pastel-lavender: #F3E8FF;
+      --pastel-lavender-border: #C084FC;
+      --pastel-rose: #FFE4E6;
+      --pastel-rose-border: #FDA4AF;
+      --pastel-peach: #FFEDD5;
+      --pastel-peach-border: #FDBA74;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 20px;
+      color: #1E293B;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .font-jua {
+      font-family: 'Jua', 'Noto Sans KR', sans-serif;
+    }
+
+    /* 둥글둥글하고 입체감 있는 파스텔 버튼 공통 스타일 */
+    .pastel-btn {
+      border-radius: 26px;
+      border-width: 2px;
+      border-bottom-width: 5px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pastel-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+    }
+
+    .pastel-btn:active:not(:disabled) {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    .pastel-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* 분자·분모가 위아래로 배치되는 실제 수학 분수 스타일 */
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 4px;
+      font-weight: 700;
+      line-height: 1.1;
+      font-size: 0.95em;
+    }
+
+    .frac-num {
+      border-bottom: 2.5px solid currentColor;
+      padding: 0 6px 2px 6px;
+      text-align: center;
+    }
+
+    .frac-den {
+      padding: 2px 6px 0 6px;
+      text-align: center;
+    }
+
+    /* 화이트보드 배경 패턴 (모눈종이 / 줄노트 / 백지) */
+    .wb-bg-grid {
+      background-color: #FFFFFF;
+      background-image:
+        linear-gradient(to right, #E2E8F0 1px, transparent 1px),
+        linear-gradient(to bottom, #E2E8F0 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .wb-bg-lined {
+      background-color: #FFFFFF;
+      background-image:
+        linear-gradient(to bottom, transparent 35px, #CBD5E1 36px);
+      background-size: 100% 36px;
+    }
+
+    .wb-bg-blank {
+      background-color: #FFFFFF;
+    }
+
+    /* 화이트보드 캔버스 터치 스크롤 방지 */
+    #whiteboard-canvas {
+      touch-action: none;
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    /* 정답 축하 애니메이션용 캔버스 */
+    #celebration-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* 숫자 입력칸 화살표 제거 및 큰 글씨 */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /* 모달 및 시상대 부드러운 등장 효과 */
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.95) translateY(8px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-pop-in {
+      animation: popIn 0.22s ease-out forwards;
+    }
+
+    /* 인쇄 전용 스타일 */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        font-size: 14pt !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #result-screen {
+        display: block !important;
+        padding: 0 !important;
+      }
+      .print-card {
+        box-shadow: none !important;
+        border: 1.5px solid #94A3B8 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- 정답 축하 폭죽/별 파티클 캔버스 -->
+  <canvas id="celebration-canvas"></canvas>
+
+  <!-- =========================================================
+       [공통 모달] 실시간 리더보드 보기 모달 (언제든 확인 가능)
+       ========================================================= -->
+  <div id="leaderboard-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="modal-lb-title">
+    <div class="animate-pop-in bg-[#FFFDF7] w-full max-w-4xl max-h-[90vh] rounded-[34px] border-4 border-[#FDE047] shadow-2xl flex flex-col overflow-hidden">
+      <!-- 모달 헤더 -->
+      <div class="px-6 py-4 bg-gradient-to-r from-[#FEF9C3] via-[#FFEDD5] to-[#E0F2FE] border-b-2 border-[#FDE047] flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-3xl">🏆</span>
+          <h2 id="modal-lb-title" class="font-jua text-2xl sm:text-3xl text-slate-900">
+            실시간 리더보드 &amp; 명예의 전당
+          </h2>
+        </div>
+        <button
+          id="btn-close-lb-modal"
+          type="button"
+          class="pastel-btn px-4 py-1.5 bg-white border-slate-300 text-slate-700 font-bold text-lg"
+        >
+          닫기 ✖️
+        </button>
+      </div>
+
+      <!-- 모달 본문 (스크롤 가능) -->
+      <div id="modal-lb-body" class="p-5 sm:p-7 overflow-y-auto space-y-6">
+        <!-- JS로 실시간 리더보드 내용 렌더링 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       [1단계] 시작 화면: 학생 정보 입력 및 모드 선택
+       ========================================================= -->
+  <main id="start-screen" class="flex-1 flex flex-col items-center justify-center p-4 sm:p-8">
+    <!-- 상단 격려 배너 + 실시간 리더보드 버튼 -->
+    <div class="w-full max-w-3xl mb-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="px-5 py-2.5 rounded-full bg-[#FEF9C3] border-2 border-[#FDE047] text-[#854D0E] font-bold text-base sm:text-lg shadow-sm">
+        ⏰ 연습 모드는 시간 제한이 없어요! 편하게 연습해 봐요 😊
+      </div>
+      <button
+        type="button"
+        data-open-leaderboard="true"
+        class="pastel-btn px-5 py-2.5 bg-[#FFEDD5] border-[#FB923C] text-[#9A3412] font-bold text-base sm:text-lg shadow-sm"
+      >
+        📊 실시간 리더보드 보기
+      </button>
+    </div>
+
+    <!-- 중앙 둥근 파스텔 카드 -->
+    <section class="w-full max-w-3xl bg-white rounded-[36px] border-4 border-[#BAE6FD] shadow-xl p-6 sm:p-10 text-center relative overflow-hidden">
+      <!-- 장식용 상단 파스텔 띠 -->
+      <div class="absolute top-0 left-0 right-0 h-4 bg-gradient-to-r from-[#BAE6FD] via-[#BBF7D0] to-[#FDE047]"></div>
+
+      <div class="inline-block mt-2 px-5 py-2 rounded-full bg-[#E0F2FE] text-[#0369A1] font-bold text-lg mb-4">
+        초등학교 6학년 2학기 수학 · 4단원
+      </div>
+
+      <h1 class="font-jua text-3xl sm:text-5xl text-[#0F172A] mb-3 tracking-tight">
+        비례식과 비례배분 수행평가 연습장 ✏️
+      </h1>
+      <p class="text-slate-600 text-lg sm:text-xl mb-7 leading-relaxed">
+        수행평가에 자주 나오는 <strong>핵심 문제 9개</strong>를 준비했어요.<br class="hidden sm:inline" />
+        오른쪽 화이트보드에 마음껏 계산하며 실력을 키워 보자!
+      </p>
+
+      <!-- 학생 정보 입력 박스 -->
+      <div class="bg-[#F8FAFC] rounded-[28px] border-2 border-[#CBD5E1] p-5 sm:p-7 mb-7">
+        <p class="text-base sm:text-lg font-bold text-[#0369A1] mb-4">
+          👇 아래 빈칸에 반, 번호, 이름을 적어 주세요!
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-y-4 gap-x-2 text-2xl sm:text-3xl font-bold text-slate-800 leading-loose">
+          <span>6학년 (</span>
+          <input
+            id="input-class"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            max="30"
+            placeholder="반"
+            aria-label="반 입력"
+            class="w-20 sm:w-24 h-14 text-center text-2xl sm:text-3xl font-bold rounded-2xl bg-[#E0F2FE]/60 border-2 border-[#38BDF8] focus:outline-none focus:ring-4 focus:ring-[#BAE6FD] text-[#0369A1] placeholder:text-slate-400 placeholder:text-lg"
+          />
+          <span>)반 (</span>
+          <input
+            id="input-number"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            max="60"
+            placeholder="번호"
+            aria-label="번호 입력"
+            class="w-20 sm:w-24 h-14 text-center text-2xl sm:text-3xl font-bold rounded-2xl bg-[#DCFCE7]/60 border-2 border-[#34D399] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0] text-[#047857] placeholder:text-slate-400 placeholder:text-lg"
+          />
+          <span>)번</span>
+          <span class="ml-1 sm:ml-3">이름 : (</span>
+          <input
+            id="input-name"
+            type="text"
+            maxlength="15"
+            placeholder="실명 입력"
+            aria-label="실명 입력"
+            class="w-36 sm:w-44 h-14 text-center text-2xl sm:text-3xl font-bold rounded-2xl bg-[#F3E8FF]/60 border-2 border-[#C084FC] focus:outline-none focus:ring-4 focus:ring-[#E9D5FF] text-[#6B21A8] placeholder:text-slate-400 placeholder:text-lg"
+          />
+          <span>)</span>
+        </div>
+
+        <!-- 입력 누락 시 안내 메시지 박스 -->
+        <div id="start-error-msg" class="hidden mt-4 px-5 py-3 rounded-2xl bg-[#FFE4E6] border-2 border-[#FDA4AF] text-[#BE123C] font-bold text-lg">
+          반(숫자), 번호(숫자), 이름(1~15자)을 모두 입력해 주세요! 😊
+        </div>
+      </div>
+
+      <!-- 두 가지 모드 선택 버튼 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+          id="btn-start-practice"
+          type="button"
+          class="pastel-btn p-5 bg-[#DCFCE7] border-[#34D399] text-[#065F46] flex flex-col items-center justify-center gap-1.5 shadow-md"
+        >
+          <span class="font-jua text-2xl sm:text-3xl">🌱 연습 모드 시작하기</span>
+          <span class="text-sm sm:text-base font-bold text-[#047857]">
+            시간 제한 없음 · 힌트 및 단계별 풀이 제공
+          </span>
+        </button>
+
+        <button
+          id="btn-start-challenge"
+          type="button"
+          class="pastel-btn p-5 bg-[#FFEDD5] border-[#FB923C] text-[#9A3412] flex flex-col items-center justify-center gap-1.5 shadow-md"
+        >
+          <span class="font-jua text-2xl sm:text-3xl">🏆 실전 모드 도전하기</span>
+          <span class="text-sm sm:text-base font-bold text-[#C2410C]">
+            리더보드 순위 등록 · 힌트 없이 실력 점검
+          </span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       [2단계] 문제 풀이 및 화이트보드 화면 (연습 모드 / 실전 모드 공용)
+       ========================================================= -->
+  <div id="practice-screen" class="hidden flex-1 flex flex-col">
+    <!-- 상단 고정 헤더 영역 -->
+    <header class="bg-white/95 backdrop-blur border-b-2 border-[#E2E8F0] px-4 py-3 sticky top-0 z-30 shadow-sm">
+      <div class="max-w-[1440px] mx-auto flex flex-col gap-3">
+        <!-- 1줄: 모드별 안내(연습 안내 vs 실전 스톱워치) + 학생 정보 배지 + 리더보드 버튼 -->
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <!-- 연습 모드 전용 안내 배너 -->
+          <div id="practice-mode-banner" class="px-4 py-1.5 rounded-full bg-[#FEF9C3] border-2 border-[#FDE047] text-[#854D0E] font-bold text-base sm:text-lg">
+            시간 제한 없어요! 천천히 화이트보드에 식을 쓰며 풀어보세요 😊
+          </div>
+
+          <!-- 실전 모드 전용 경과 시간 스톱워치 -->
+          <div id="challenge-timer-banner" class="hidden flex items-center gap-2.5 px-5 py-1.5 rounded-full bg-[#FFEDD5] border-2 border-[#FB923C] text-[#9A3412] font-bold text-lg sm:text-xl">
+            <span>🏆 실전 모드 도전 중</span>
+            <span class="px-3 py-0.5 rounded-full bg-white border border-[#FDBA74] font-jua text-xl sm:text-2xl text-[#C2410C]" id="challenge-stopwatch">
+              ⏱ 00:00
+            </span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <div id="header-student-info" class="px-4 py-1.5 rounded-full bg-[#E0F2FE] border-2 border-[#7DD3FC] text-[#0369A1] font-bold text-base sm:text-lg">
+              6학년 0반 0번 이름 : 홍길동
+            </div>
+            <button
+              type="button"
+              data-open-leaderboard="true"
+              class="pastel-btn px-4 py-1.5 bg-[#FEF9C3] border-[#FACC15] text-[#854D0E] font-bold text-base"
+            >
+              📊 실시간 리더보드 보기
+            </button>
+            <button
+              id="btn-open-result-top"
+              type="button"
+              class="pastel-btn px-4 py-1.5 bg-[#F3E8FF] border-[#C084FC] text-[#6B21A8] font-bold text-base"
+            >
+              학습 결과 보기 🎉
+            </button>
+            <button
+              id="btn-submit-challenge-top"
+              type="button"
+              class="hidden pastel-btn px-4 py-1.5 bg-[#BBF7D0] border-[#34D399] text-[#065F46] font-bold text-base"
+            >
+              🏁 최종 제출 및 순위 등록
+            </button>
+          </div>
+        </div>
+
+        <!-- 2줄: 1~9번 문제 번호 버튼 + 진행률 바 -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <!-- 문제 번호 버튼 목록 -->
+          <nav id="problem-nav" aria-label="문제 번호 선택" class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <!-- JS로 1~9번 버튼 동적 생성 -->
+          </nav>
+
+          <!-- 진행률 바 -->
+          <div class="flex items-center gap-3 min-w-[230px] sm:min-w-[280px]">
+            <span id="progress-label" class="font-bold text-base sm:text-lg text-[#047857] whitespace-nowrap">
+              완료: 0 / 9문제
+            </span>
+            <div class="flex-1 h-4 bg-slate-100 rounded-full border border-slate-300 overflow-hidden">
+              <div id="progress-bar" class="h-full bg-gradient-to-r from-[#34D399] to-[#38BDF8] rounded-full transition-all duration-300" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 메인 2단 분할 작업 영역 (데스크톱 좌우 / 모바일·태블릿 세로 상하) -->
+    <main class="flex-1 max-w-[1440px] w-full mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      
+      <!-- [왼쪽 패널] 문제 · 힌트 · 정답 입력 · 풀이 과정 (6칸) -->
+      <section class="lg:col-span-6 bg-white rounded-[32px] border-3 border-[#BAE6FD] shadow-md p-5 sm:p-7 flex flex-col justify-between">
+        <div>
+          <!-- 유형 배지 및 문제 번호 -->
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <span id="problem-type-badge" class="px-4 py-1.5 rounded-full bg-[#E0F2FE] text-[#0369A1] font-bold text-base sm:text-lg">
+              유형 1 · 분수의 비 간단히 하기
+            </span>
+            <span id="problem-status-badge" class="px-3.5 py-1 rounded-full bg-slate-100 text-slate-600 font-bold text-base">
+              도전 중 ✏️
+            </span>
+          </div>
+
+          <!-- 문제 제목 및 본문 -->
+          <div class="bg-[#FFFDF7] rounded-[24px] border-2 border-[#E2E8F0] p-5 sm:p-6 mb-5">
+            <h2 id="problem-title" class="font-jua text-2xl sm:text-3xl text-[#1E3A8A] mb-3">
+              문제 1-1
+            </h2>
+            <p id="problem-text" class="text-[21px] sm:text-[23px] leading-[1.8] text-slate-800 font-medium break-keep">
+              <!-- 문제 본문 렌더링 -->
+            </p>
+          </div>
+
+          <!-- 힌트 토글 영역 (연습 모드 전용) -->
+          <div id="hint-section" class="mb-5">
+            <button
+              id="btn-toggle-hint"
+              type="button"
+              class="pastel-btn px-6 py-3 bg-[#FEF9C3] border-[#FACC15] text-[#854D0E] font-bold text-lg sm:text-xl inline-flex items-center gap-2"
+            >
+              💡 힌트 보기
+            </button>
+
+            <div id="hint-box" class="hidden mt-3 p-4 sm:p-5 rounded-[22px] bg-[#FEFCE8] border-2 border-[#FDE047] text-[#713F12] text-lg sm:text-xl leading-relaxed">
+              <strong class="block mb-1 text-[#A16207]">✨ 첫 단계 힌트:</strong>
+              <span id="hint-text"></span>
+            </div>
+          </div>
+
+          <!-- 정답 입력 영역 -->
+          <div class="bg-[#F8FAFC] rounded-[26px] border-2 border-[#CBD5E1] p-5 mb-5">
+            <label class="block font-bold text-lg sm:text-xl text-slate-700 mb-3">
+              ✏️ 구한 답을 아래 빈칸에 적어 보세요!
+            </label>
+
+            <!-- 비(ratio) 입력 UI: [ ] : [ ] -->
+            <div id="input-group-ratio" class="flex items-center justify-center gap-3 sm:gap-4 my-2">
+              <input
+                id="ans-ratio-left"
+                type="number"
+                inputmode="numeric"
+                placeholder="전항"
+                aria-label="비의 전항 입력"
+                class="w-28 sm:w-36 h-16 text-center text-2xl sm:text-3xl font-extrabold rounded-2xl bg-white border-3 border-[#38BDF8] focus:outline-none focus:ring-4 focus:ring-[#BAE6FD] text-[#0369A1] placeholder:text-slate-300 placeholder:text-xl"
+              />
+              <span class="text-4xl font-black text-slate-700">:</span>
+              <input
+                id="ans-ratio-right"
+                type="number"
+                inputmode="numeric"
+                placeholder="후항"
+                aria-label="비의 후항 입력"
+                class="w-28 sm:w-36 h-16 text-center text-2xl sm:text-3xl font-extrabold rounded-2xl bg-white border-3 border-[#38BDF8] focus:outline-none focus:ring-4 focus:ring-[#BAE6FD] text-[#0369A1] placeholder:text-slate-300 placeholder:text-xl"
+              />
+            </div>
+
+            <!-- 단일 숫자(넓이) 입력 UI: [ ] cm² 또는 m² -->
+            <div id="input-group-single" class="hidden flex items-center justify-center gap-3 my-2">
+              <input
+                id="ans-single-val"
+                type="number"
+                inputmode="numeric"
+                placeholder="숫자 입력"
+                aria-label="넓이 값 입력"
+                class="w-40 sm:w-48 h-16 text-center text-2xl sm:text-3xl font-extrabold rounded-2xl bg-white border-3 border-[#34D399] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0] text-[#047857] placeholder:text-slate-300 placeholder:text-xl"
+              />
+              <span id="ans-single-unit" class="text-2xl sm:text-3xl font-extrabold text-slate-700">
+                cm<sup>2</sup>
+              </span>
+            </div>
+
+            <!-- [연습 모드 전용] 정답 확인하기 & 단계별 풀이 보기 버튼 -->
+            <div id="practice-action-buttons" class="mt-5 flex flex-wrap items-center justify-center gap-3">
+              <button
+                id="btn-check-answer"
+                type="button"
+                class="pastel-btn flex-1 min-w-[200px] px-6 py-4 bg-[#BBF7D0] border-[#34D399] text-[#065F46] font-jua text-2xl"
+              >
+                ✅ 정답 확인하기
+              </button>
+
+              <button
+                id="btn-toggle-solution"
+                type="button"
+                class="pastel-btn px-6 py-4 bg-[#F3E8FF] border-[#C084FC] text-[#6B21A8] font-bold text-lg sm:text-xl"
+              >
+                📖 단계별 풀이 보기
+              </button>
+            </div>
+
+            <!-- [실전 모드 전용] 자동 저장 안내 배지 -->
+            <div id="challenge-autosave-note" class="hidden mt-4 p-3 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] text-center text-base sm:text-lg font-bold text-[#1D4ED8]">
+              💡 숫자를 입력하면 자동으로 저장돼요! 9번까지 다 푼 뒤 최종 제출을 눌러 주세요.
+            </div>
+
+            <!-- 채점 결과 피드백 박스 -->
+            <div id="feedback-box" class="hidden mt-4 p-4 sm:p-5 rounded-[22px] text-center font-bold text-xl leading-relaxed">
+              <!-- 정답 또는 오답 격려 메시지 -->
+            </div>
+          </div>
+
+          <!-- 단계별 풀이 과정 토글 박스 (연습 모드 전용) -->
+          <div id="solution-box" class="hidden mb-5 p-5 sm:p-6 rounded-[26px] bg-[#FAF5FF] border-2 border-[#D8B4FE] text-slate-800">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-[#E9D5FF]">
+              <span class="font-jua text-2xl text-[#6B21A8]">📖 차근차근 단계별 풀이</span>
+              <span id="solution-answer-badge" class="px-4 py-1 rounded-full bg-[#F3E8FF] border border-[#C084FC] text-[#6B21A8] font-extrabold text-lg">
+                정답: 14 : 15
+              </span>
+            </div>
+            <div id="solution-steps" class="space-y-3 text-[20px] leading-[1.75] break-keep">
+              <!-- 단계별 풀이 렌더링 -->
+            </div>
+          </div>
+
+          <!-- [실전 모드 전용] 미응답 문항 안내 및 최종 제출 확인 바 -->
+          <div id="challenge-confirm-bar" class="hidden mb-4 p-4 sm:p-5 rounded-[24px] bg-[#FFF1F2] border-2 border-[#FDA4AF] text-center">
+            <p id="challenge-confirm-text" class="text-lg sm:text-xl font-bold text-[#BE123C] mb-3">
+              아직 답을 적지 않은 문제가 있어요! 그대로 제출할까요?
+            </p>
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              <button
+                id="btn-challenge-confirm-yes"
+                type="button"
+                class="pastel-btn px-6 py-2.5 bg-[#FDA4AF] border-[#F43F5E] text-white font-bold text-lg"
+              >
+                네, 지금 제출할게요 🏁
+              </button>
+              <button
+                id="btn-challenge-confirm-no"
+                type="button"
+                class="pastel-btn px-6 py-2.5 bg-white border-slate-300 text-slate-700 font-bold text-lg"
+              >
+                돌아가서 마저 풀기 ✏️
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 이전 / 다음 / 결과 보기 / 최종 제출 내비게이션 -->
+        <div class="pt-4 border-t-2 border-slate-100 flex flex-wrap items-center justify-between gap-3">
+          <button
+            id="btn-prev"
+            type="button"
+            class="pastel-btn px-6 py-3.5 bg-slate-100 border-slate-300 text-slate-700 font-bold text-lg sm:text-xl"
+          >
+            ⬅️ 이전 문제
+          </button>
+
+          <button
+            id="btn-next"
+            type="button"
+            class="pastel-btn px-7 py-3.5 bg-[#BAE6FD] border-[#38BDF8] text-[#0369A1] font-bold text-lg sm:text-xl"
+          >
+            다음 문제 ➡️
+          </button>
+
+          <button
+            id="btn-finish"
+            type="button"
+            class="hidden pastel-btn px-7 py-3.5 bg-[#FDE047] border-[#EAB308] text-[#713F12] font-jua text-2xl"
+          >
+            학습 결과 보기 🎉
+          </button>
+
+          <button
+            id="btn-submit-challenge"
+            type="button"
+            class="hidden pastel-btn px-7 py-3.5 bg-[#BBF7D0] border-[#34D399] text-[#065F46] font-jua text-2xl shadow-md"
+          >
+            🏁 최종 제출 및 순위 등록
+          </button>
+        </div>
+      </section>
+
+      <!-- [오른쪽 패널] 자유 풀이 화이트보드 (6칸) -->
+      <section class="lg:col-span-6 bg-white rounded-[32px] border-3 border-[#A7F3D0] shadow-md p-4 sm:p-6 flex flex-col">
+        <!-- 화이트보드 제목 및 안내 -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🎨</span>
+            <h2 class="font-jua text-2xl sm:text-3xl text-[#065F46]">자유 풀이 화이트보드</h2>
+          </div>
+          <span class="text-sm sm:text-base font-bold text-[#047857] bg-[#ECFDF5] px-3.5 py-1 rounded-full border border-[#A7F3D0]">
+            문제마다 풀이가 자동 저장돼요!
+          </span>
+        </div>
+
+        <!-- 화이트보드 도구 모음 -->
+        <div class="bg-[#F8FAFC] rounded-[24px] border-2 border-[#E2E8F0] p-3 mb-3 flex flex-col gap-2.5">
+          <!-- 첫째 줄: 펜 색상 + 지우개 + 되돌리기 -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <!-- 색상 선택 버튼 -->
+            <div class="flex items-center gap-1.5" role="group" aria-label="펜 색상 선택">
+              <button
+                type="button"
+                data-color="#1E293B"
+                class="wb-color-btn pastel-btn px-3 py-1.5 bg-white border-slate-400 text-slate-900 font-bold text-base flex items-center gap-1.5 ring-4 ring-[#BAE6FD]"
+              >
+                <span class="w-4 h-4 rounded-full bg-[#1E293B] inline-block"></span>검정
+              </button>
+              <button
+                type="button"
+                data-color="#2563EB"
+                class="wb-color-btn pastel-btn px-3 py-1.5 bg-[#EFF6FF] border-[#93C5FD] text-[#1D4ED8] font-bold text-base flex items-center gap-1.5"
+              >
+                <span class="w-4 h-4 rounded-full bg-[#2563EB] inline-block"></span>파랑
+              </button>
+              <button
+                type="button"
+                data-color="#E11D48"
+                class="wb-color-btn pastel-btn px-3 py-1.5 bg-[#FFF1F2] border-[#FDA4AF] text-[#BE123C] font-bold text-base flex items-center gap-1.5"
+              >
+                <span class="w-4 h-4 rounded-full bg-[#E11D48] inline-block"></span>빨강
+              </button>
+              <button
+                type="button"
+                data-color="#059669"
+                class="wb-color-btn pastel-btn px-3 py-1.5 bg-[#ECFDF5] border-[#6EE7B7] text-[#047857] font-bold text-base flex items-center gap-1.5"
+              >
+                <span class="w-4 h-4 rounded-full bg-[#059669] inline-block"></span>초록
+              </button>
+            </div>
+
+            <!-- 지우개 및 되돌리기 -->
+            <div class="flex items-center gap-1.5">
+              <button
+                id="btn-eraser"
+                type="button"
+                class="pastel-btn px-3.5 py-1.5 bg-[#FEF9C3] border-[#FACC15] text-[#854D0E] font-bold text-base"
+              >
+                🧽 지우개
+              </button>
+              <button
+                id="btn-undo"
+                type="button"
+                class="pastel-btn px-3.5 py-1.5 bg-[#F3E8FF] border-[#C084FC] text-[#6B21A8] font-bold text-base"
+              >
+                ↩️ 되돌리기
+              </button>
+            </div>
+          </div>
+
+          <!-- 둘째 줄: 펜 굵기 + 배경 전환 + 모두 지우기 -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-slate-200">
+            <!-- 펜 굵기 -->
+            <div class="flex items-center gap-1.5" role="group" aria-label="펜 굵기 선택">
+              <span class="text-sm font-bold text-slate-500 mr-1">굵기:</span>
+              <button
+                type="button"
+                data-width="2.5"
+                class="wb-width-btn pastel-btn px-3 py-1 bg-white border-slate-300 text-slate-700 font-bold text-sm"
+              >
+                얇게
+              </button>
+              <button
+                type="button"
+                data-width="5"
+                class="wb-width-btn pastel-btn px-3 py-1 bg-[#E0F2FE] border-[#38BDF8] text-[#0369A1] font-bold text-sm ring-2 ring-[#7DD3FC]"
+              >
+                보통
+              </button>
+              <button
+                type="button"
+                data-width="9"
+                class="wb-width-btn pastel-btn px-3 py-1 bg-white border-slate-300 text-slate-700 font-bold text-sm"
+              >
+                굵게
+              </button>
+            </div>
+
+            <!-- 배경 선택 (모눈종이 / 줄노트 / 백지) -->
+            <div class="flex items-center gap-1.5" role="group" aria-label="화이트보드 배경 선택">
+              <span class="text-sm font-bold text-slate-500 mr-1">배경:</span>
+              <button
+                type="button"
+                data-bg="grid"
+                class="wb-bg-btn pastel-btn px-3 py-1 bg-[#DCFCE7] border-[#34D399] text-[#065F46] font-bold text-sm ring-2 ring-[#6EE7B7]"
+              >
+                모눈종이
+              </button>
+              <button
+                type="button"
+                data-bg="lined"
+                class="wb-bg-btn pastel-btn px-3 py-1 bg-white border-slate-300 text-slate-700 font-bold text-sm"
+              >
+                줄노트
+              </button>
+              <button
+                type="button"
+                data-bg="blank"
+                class="wb-bg-btn pastel-btn px-3 py-1 bg-white border-slate-300 text-slate-700 font-bold text-sm"
+              >
+                백지
+              </button>
+            </div>
+
+            <!-- 모두 지우기 버튼 -->
+            <button
+              id="btn-clear-ask"
+              type="button"
+              class="pastel-btn px-3.5 py-1 bg-[#FFE4E6] border-[#FDA4AF] text-[#BE123C] font-bold text-sm"
+            >
+              🗑️ 모두 지우기
+            </button>
+          </div>
+
+          <!-- 모두 지우기 확인 바 (confirm() 대신 사용하는 인라인 안전 확인창) -->
+          <div id="clear-confirm-bar" class="hidden mt-1 p-2.5 rounded-2xl bg-[#FFF1F2] border-2 border-[#FDA4AF] flex flex-wrap items-center justify-between gap-2">
+            <span class="text-base font-bold text-[#BE123C]">
+              정말 이 문제의 화이트보드 그림을 모두 지울까요?
+            </span>
+            <div class="flex items-center gap-2">
+              <button
+                id="btn-clear-confirm"
+                type="button"
+                class="pastel-btn px-4 py-1 bg-[#FDA4AF] border-[#F43F5E] text-white font-bold text-sm"
+              >
+                네, 지울게요
+              </button>
+              <button
+                id="btn-clear-cancel"
+                type="button"
+                class="pastel-btn px-4 py-1 bg-white border-slate-300 text-slate-700 font-bold text-sm"
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 캔버스 컨테이너 (모바일 세로 모드에서도 넉넉한 높이 보장) -->
+        <div id="canvas-wrapper" class="wb-bg-grid flex-1 min-h-[400px] sm:min-h-[480px] lg:min-h-[520px] rounded-[24px] border-3 border-[#CBD5E1] overflow-hidden relative shadow-inner">
+          <canvas id="whiteboard-canvas"></canvas>
+          <div class="absolute bottom-3 right-4 pointer-events-none text-sm font-medium text-slate-400 select-none">
+            손가락, 마우스, 태블릿 펜으로 자유롭게 써 보세요 ✍️
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       [3단계] 학습 결과 & 실시간 리더보드 화면
+       ========================================================= -->
+  <section id="result-screen" class="hidden flex-1 max-w-6xl w-full mx-auto p-4 sm:p-8 space-y-6">
+    <!-- 상단 내 점수 및 소요 시간 요약 카드 -->
+    <div class="print-card bg-white rounded-[36px] border-4 border-[#FDE047] shadow-xl p-6 sm:p-10 text-center">
+      <div id="result-mode-badge" class="inline-block px-5 py-2 rounded-full bg-[#FEF9C3] border-2 border-[#FACC15] text-[#854D0E] font-bold text-lg mb-3">
+        🎉 수행평가 대비 연습 완료 리포트
+      </div>
+      <h1 class="font-jua text-3xl sm:text-5xl text-slate-900 mb-3">
+        참 수고 많았어요! 👏
+      </h1>
+      <p id="result-student-banner" class="text-xl sm:text-2xl font-bold text-[#0369A1] mb-5">
+        6학년 0반 0번 이름 : 홍길동
+      </p>
+
+      <!-- 점수 및 소요 시간 카드 -->
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <div class="inline-flex flex-col sm:flex-row items-center gap-3 px-7 py-4 rounded-[28px] bg-[#ECFDF5] border-3 border-[#6EE7B7]">
+          <span class="text-xl font-bold text-[#065F46]">맞힌 문제 수</span>
+          <span id="result-score-text" class="font-jua text-4xl sm:text-5xl text-[#059669]">
+            0 / 9 문제
+          </span>
+        </div>
+
+        <div id="result-time-card" class="hidden inline-flex flex-col sm:flex-row items-center gap-3 px-7 py-4 rounded-[28px] bg-[#EFF6FF] border-3 border-[#93C5FD]">
+          <span class="text-xl font-bold text-[#1E40AF]">걸린 시간</span>
+          <span id="result-time-text" class="font-jua text-4xl sm:text-5xl text-[#2563EB]">
+            00분 00초
+          </span>
+        </div>
+      </div>
+
+      <!-- Firebase 저장 상태 알림 배지 -->
+      <div id="firebase-save-status" class="hidden mt-4 inline-block px-5 py-2 rounded-full bg-[#F3E8FF] border border-[#D8B4FE] text-[#6B21A8] font-bold text-base sm:text-lg">
+        📡 실시간 리더보드에 기록을 등록하고 있어요...
+      </div>
+
+      <p id="result-encouragement" class="mt-4 text-lg sm:text-xl text-slate-600 font-medium">
+        화이트보드에 차근차근 식을 쓰며 끝까지 도전한 모습이 정말 멋져요!
+      </p>
+    </div>
+
+    <!-- [실전 모드 전용] 실시간 리더보드 · 1~3위 시상대 · 끝까지 완주한 명예의 전당 -->
+    <div id="result-leaderboard-section" class="hidden print-card bg-white rounded-[36px] border-4 border-[#FDBA74] shadow-xl p-6 sm:p-10 space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-slate-100 pb-4">
+        <div class="flex items-center gap-2.5">
+          <span class="text-3xl">🏆</span>
+          <h2 class="font-jua text-2xl sm:text-4xl text-slate-900">
+            실시간 리더보드 &amp; 명예의 전당
+          </h2>
+        </div>
+        <span class="px-4 py-1.5 rounded-full bg-[#ECFDF5] border border-[#6EE7B7] text-[#047857] font-bold text-base">
+          🟢 실시간 자동 업데이트 중
+        </span>
+      </div>
+
+      <!-- JS로 시상대 + 필터 + 순위표 + 명예의 전당 렌더링 -->
+      <div id="result-lb-content" class="space-y-6"></div>
+    </div>
+
+    <!-- 9개 문항 전체 오답 노트 및 단계별 풀이 해설 -->
+    <div class="print-card bg-white rounded-[36px] border-4 border-[#BAE6FD] shadow-xl p-6 sm:p-10">
+      <h2 class="font-jua text-2xl sm:text-3xl text-slate-800 mb-2">
+        📋 9문제 전체 정오표 &amp; 단계별 풀이 해설
+      </h2>
+      <p class="text-slate-600 text-base sm:text-lg mb-5">
+        틀린 문제는 아래 <strong>단계별 풀이 해설</strong>을 꼭 읽어 보고, 다시 도전해 보세요!
+      </p>
+
+      <div id="result-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        <!-- JS로 9개 문제 카드 및 풀이 해설 생성 -->
+      </div>
+
+      <!-- 하단 액션 버튼 -->
+      <div class="no-print flex flex-wrap items-center justify-center gap-4 pt-4 border-t-2 border-slate-100">
+        <button
+          id="btn-print-result"
+          type="button"
+          class="pastel-btn px-7 py-4 bg-[#E0F2FE] border-[#38BDF8] text-[#0369A1] font-jua text-2xl"
+        >
+          🖨️ 결과 인쇄하기
+        </button>
+        <button
+          id="btn-retry-challenge"
+          type="button"
+          class="pastel-btn px-7 py-4 bg-[#FFEDD5] border-[#FB923C] text-[#9A3412] font-jua text-2xl"
+        >
+          🏆 실전 모드 다시 도전하기
+        </button>
+        <button
+          id="btn-back-to-practice"
+          type="button"
+          class="pastel-btn px-7 py-4 bg-[#BBF7D0] border-[#34D399] text-[#065F46] font-jua text-2xl"
+        >
+          🌱 연습 모드로 돌아가기
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <script type="module">
+    /**
+     * 초등학교 6학년 '비례식과 비례배분' 수행평가 대비 인터랙티브 웹 학습지
+     * + Firebase Firestore v10 모듈형 실시간 리더보드 연동
+     */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    // 제공된 Firebase 설정값 초기화
+    const firebaseConfig = {
+      apiKey: "AIzaSyB5BSbZig1Tv2smM4ptHnlUYAz9X-rpsA8",
+      authDomain: "sdfdddd.firebaseapp.com",
+      projectId: "sdfdddd",
+      storageBucket: "sdfdddd.firebasestorage.app",
+      messagingSenderId: "418524017203",
+      appId: "1:418524017203:web:eeb9cc0866f1ff8d0c6946"
+    };
+
+    let db = null;
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+    } catch (err) {
+      console.error("Firebase 초기화 오류:", err);
+    }
+
+    // 1. 위아래 분수 HTML 생성 헬퍼
+    function frac(num, den) {
+      return `<span class="frac" aria-label="${den}분의 ${num}"><span class="frac-num">${num}</span><span class="frac-den">${den}</span></span>`;
+    }
+
+    // 2. 9개 수행평가 대비 연습 문항 데이터 (분수 표기 모두 stacked CSS 적용)
+    const PROBLEMS = [
+      {
+        id: '1-1',
+        typeBadge: '유형 1 · 분수의 비를 간단한 자연수의 비로 나타내기',
+        title: '문제 1-1',
+        questionHTML: `같은 양의 우유를 마시는데 지호는 전체의 ${frac(2, 5)}, 수빈이는 전체의 ${frac(3, 7)}만큼 마셨습니다. 지호와 수빈이가 마신 우유의 양의 비를 간단한 자연수의 비로 나타내면 얼마인지 구해 보세요.`,
+        hintHTML: `두 분모 <strong>5</strong>와 <strong>7</strong>의 최소공배수인 <strong>35</strong>를 전항과 후항에 각각 곱해 보세요!`,
+        answerType: 'ratio',
+        correctRatio: [14, 15],
+        answerDisplay: '14 : 15',
+        solutionSteps: [
+          `1) 지호와 수빈이가 마신 우유의 양의 비는 ${frac(2, 5)} : ${frac(3, 7)}입니다.`,
+          `2) 두 분모 5와 7의 최소공배수인 <strong>35</strong>를 비의 전항과 후항에 각각 곱합니다.`,
+          `3) (${frac(2, 5)} × 35) : (${frac(3, 7)} × 35) = <strong>14 : 15</strong>입니다.`
+        ]
+      },
+      {
+        id: '1-2',
+        typeBadge: '유형 1 · 분수의 비를 간단한 자연수의 비로 나타내기',
+        title: '문제 1-2',
+        questionHTML: `같은 넓이의 벽에 페인트를 칠하는데 1시간 동안 태민이는 ${frac(3, 4)}, 유진이는 ${frac(5, 6)}만큼 칠했습니다. 태민이와 유진이가 1시간 동안 칠한 벽의 넓이의 비를 간단한 자연수의 비로 나타내면 얼마인지 구해 보세요.`,
+        hintHTML: `두 분모 <strong>4</strong>와 <strong>6</strong>의 최소공배수인 <strong>12</strong>를 전항과 후항에 각각 곱해 보세요!`,
+        answerType: 'ratio',
+        correctRatio: [9, 10],
+        answerDisplay: '9 : 10',
+        solutionSteps: [
+          `1) 태민이와 유진이가 1시간 동안 칠한 벽의 넓이의 비는 ${frac(3, 4)} : ${frac(5, 6)}입니다.`,
+          `2) 두 분모 4와 6의 최소공배수인 <strong>12</strong>를 전항과 후항에 각각 곱합니다.`,
+          `3) (${frac(3, 4)} × 12) : (${frac(5, 6)} × 12) = <strong>9 : 10</strong>입니다.`
+        ]
+      },
+      {
+        id: '1-3',
+        typeBadge: '유형 1 · 분수의 비를 간단한 자연수의 비로 나타내기',
+        title: '문제 1-3',
+        questionHTML: `같은 거리의 산책로를 걷는데 30분 동안 서연이는 전체 거리의 ${frac(2, 3)}, 현우는 전체 거리의 ${frac(3, 8)}만큼 걸었습니다. 서연이와 현우가 30분 동안 걸은 거리의 비를 간단한 자연수의 비로 나타내면 얼마인지 구해 보세요.`,
+        hintHTML: `두 분모 <strong>3</strong>과 <strong>8</strong>의 최소공배수인 <strong>24</strong>를 전항과 후항에 각각 곱해 보세요!`,
+        answerType: 'ratio',
+        correctRatio: [16, 9],
+        answerDisplay: '16 : 9',
+        solutionSteps: [
+          `1) 서연이와 현우가 걸은 거리의 비는 ${frac(2, 3)} : ${frac(3, 8)}입니다.`,
+          `2) 두 분모 3과 8의 최소공배수인 <strong>24</strong>를 전항과 후항에 각각 곱합니다.`,
+          `3) (${frac(2, 3)} × 24) : (${frac(3, 8)} × 24) = <strong>16 : 9</strong>입니다.`
+        ]
+      },
+      {
+        id: '2-1',
+        typeBadge: '유형 2 · 소수의 비를 간단히 하여 넓이 구하기',
+        title: '문제 2-1',
+        questionHTML: `가로와 세로의 비가 <strong>1.5 : 2.5</strong>인 직사각형이 있습니다. 이 직사각형의 가로 길이가 <strong>12cm</strong>일 때, 이 직사각형의 넓이는 몇 cm<sup>2</sup>인지 구해 보세요.`,
+        hintHTML: `먼저 <strong>1.5 : 2.5</strong>를 간단한 자연수의 비(<strong>3 : 5</strong>)로 바꾼 뒤 세로 길이를 구해 보세요!`,
+        answerType: 'single',
+        correctValue: 240,
+        unitHTML: `cm<sup>2</sup>`,
+        answerDisplay: '240 cm²',
+        solutionSteps: [
+          `1) 1.5 : 2.5의 전항과 후항에 10을 곱하면 15 : 25이고, 5로 나누면 <strong>3 : 5</strong>입니다.`,
+          `2) 세로를 □cm라 하면 3 : 5 = 12 : □이므로 3 × □ = 5 × 12 = 60, <strong>□ = 20cm</strong>입니다.`,
+          `3) 직사각형의 넓이는 12 × 20 = <strong>240(cm<sup>2</sup>)</strong>입니다.`
+        ]
+      },
+      {
+        id: '2-2',
+        typeBadge: '유형 2 · 소수의 비를 간단히 하여 넓이 구하기',
+        title: '문제 2-2',
+        questionHTML: `가로와 세로의 비가 <strong>2.4 : 1.8</strong>인 직사각형 모양의 액자가 있습니다. 이 액자의 세로 길이가 <strong>15cm</strong>일 때, 이 액자의 넓이는 몇 cm<sup>2</sup>인지 구해 보세요.`,
+        hintHTML: `먼저 <strong>2.4 : 1.8</strong>을 간단한 자연수의 비(<strong>4 : 3</strong>)로 바꾼 뒤 가로 길이를 구해 보세요!`,
+        answerType: 'single',
+        correctValue: 300,
+        unitHTML: `cm<sup>2</sup>`,
+        answerDisplay: '300 cm²',
+        solutionSteps: [
+          `1) 2.4 : 1.8의 전항과 후항에 10을 곱하면 24 : 18이고, 6으로 나누면 <strong>4 : 3</strong>입니다.`,
+          `2) 가로를 □cm라 하면 4 : 3 = □ : 15이므로 3 × □ = 4 × 15 = 60, <strong>□ = 20cm</strong>입니다.`,
+          `3) 액자의 넓이는 20 × 15 = <strong>300(cm<sup>2</sup>)</strong>입니다.`
+        ]
+      },
+      {
+        id: '2-3',
+        typeBadge: '유형 2 · 소수의 비를 간단히 하여 넓이 구하기',
+        title: '문제 2-3',
+        questionHTML: `가로와 세로의 비가 <strong>0.8 : 1.4</strong>인 직사각형 모양의 화단이 있습니다. 이 화단의 가로 길이가 <strong>16m</strong>일 때, 이 화단의 넓이는 몇 m<sup>2</sup>인지 구해 보세요.`,
+        hintHTML: `먼저 <strong>0.8 : 1.4</strong>를 간단한 자연수의 비(<strong>4 : 7</strong>)로 바꾼 뒤 세로 길이를 구해 보세요!`,
+        answerType: 'single',
+        correctValue: 448,
+        unitHTML: `m<sup>2</sup>`,
+        answerDisplay: '448 m²',
+        solutionSteps: [
+          `1) 0.8 : 1.4의 전항과 후항에 10을 곱하면 8 : 14이고, 2로 나누면 <strong>4 : 7</strong>입니다.`,
+          `2) 세로를 □m라 하면 4 : 7 = 16 : □이므로 4 × □ = 7 × 16 = 112, <strong>□ = 28m</strong>입니다.`,
+          `3) 화단의 넓이는 16 × 28 = <strong>448(m<sup>2</sup>)</strong>입니다.`
+        ]
+      },
+      {
+        id: '3-1',
+        typeBadge: '유형 3 · 남은 양의 비를 이용해 처음 양의 비 구하기',
+        title: '문제 3-1',
+        questionHTML: `준서와 하은이가 <strong>1500원</strong>짜리 공책을 각각 한 권씩 샀더니 남은 돈의 비가 <strong>2 : 3</strong>이 되고 준서의 남은 돈은 <strong>2000원</strong>입니다. 준서와 하은이가 처음에 갖고 있던 돈의 비를 간단한 자연수의 비로 나타내면 얼마인지 구해 보세요.`,
+        hintHTML: `먼저 <strong>2 : 3 = 2000 : □</strong>로 하은이의 남은 돈을 구한 뒤, 두 사람 모두에게 <strong>1500원</strong>씩 더해 보세요!`,
+        answerType: 'ratio',
+        correctRatio: [7, 9],
+        answerDisplay: '7 : 9',
+        solutionSteps: [
+          `1) 하은이의 남은 돈을 □원이라 하면 2 : 3 = 2000 : □이므로 <strong>□ = 3000원</strong>입니다.`,
+          `2) 처음 돈은 준서 2000 + 1500 = <strong>3500원</strong>, 하은이 3000 + 1500 = <strong>4500원</strong>입니다.`,
+          `3) 처음 돈의 비 3500 : 4500을 500으로 나누면 <strong>7 : 9</strong>입니다.`
+        ]
+      },
+      {
+        id: '3-2',
+        typeBadge: '유형 3 · 남은 양의 비를 이용해 처음 양의 비 구하기',
+        title: '문제 3-2',
+        questionHTML: `민수와 지아가 각자 다른 동화책을 각각 <strong>30쪽</strong>씩 읽었더니 남은 쪽수의 비가 <strong>5 : 4</strong>가 되고 지아의 남은 쪽수는 <strong>60쪽</strong>입니다. 민수와 지아가 처음에 가지고 있던 동화책의 전체 쪽수의 비를 간단한 자연수의 비로 나타내면 얼마인지 구해 보세요.`,
+        hintHTML: `먼저 <strong>5 : 4 = □ : 60</strong>으로 민수의 남은 쪽수를 구한 뒤, 두 사람 모두에게 <strong>30쪽</strong>씩 더해 보세요!`,
+        answerType: 'ratio',
+        correctRatio: [7, 6],
+        answerDisplay: '7 : 6',
+        solutionSteps: [
+          `1) 민수의 남은 쪽수를 □쪽이라 하면 5 : 4 = □ : 60이므로 <strong>□ = 75쪽</strong>입니다.`,
+          `2) 처음 전체 쪽수는 민수 75 + 30 = <strong>105쪽</strong>, 지아 60 + 30 = <strong>90쪽</strong>입니다.`,
+          `3) 처음 전체 쪽수의 비 105 : 90을 15로 나누면 <strong>7 : 6</strong>입니다.`
+        ]
+      },
+      {
+        id: '3-3',
+        typeBadge: '유형 3 · 남은 양의 비를 이용해 처음 양의 비 구하기',
+        title: '문제 3-3',
+        questionHTML: `도윤이와 서아가 <strong>800원</strong>짜리 아이스크림을 각각 한 개씩 사 먹었더니 남은 돈의 비가 <strong>4 : 5</strong>가 되고 도윤이의 남은 돈은 <strong>3200원</strong>입니다. 도윤이와 서아가 처음에 갖고 있던 돈의 비를 간단한 자연수의 비로 나타내면 얼마인지 구해 보세요.`,
+        hintHTML: `먼저 <strong>4 : 5 = 3200 : □</strong>로 서아의 남은 돈을 구한 뒤, 두 사람 모두에게 <strong>800원</strong>씩 더해 보세요!`,
+        answerType: 'ratio',
+        correctRatio: [5, 6],
+        answerDisplay: '5 : 6',
+        solutionSteps: [
+          `1) 서아의 남은 돈을 □원이라 하면 4 : 5 = 3200 : □이므로 <strong>□ = 4000원</strong>입니다.`,
+          `2) 처음 돈은 도윤이 3200 + 800 = <strong>4000원</strong>, 서아 4000 + 800 = <strong>4800원</strong>입니다.`,
+          `3) 처음 돈의 비 4000 : 4800을 800으로 나누면 <strong>5 : 6</strong>입니다.`
+        ]
+      }
+    ];
+
+    // 3. 애플리케이션 전역 상태
+    const state = {
+      mode: 'practice', // 'practice' | 'challenge'
+      student: { classNum: null, number: null, name: '' },
+      currentIndex: 0,
+      elapsedSec: 0,
+      timerInterval: null,
+      lastSubmittedDocId: null,
+      leaderboardRecords: [],
+      leaderboardLoading: true,
+      leaderboardError: '',
+      leaderboardFilter: 'all', // 'all' | 'myClass'
+      userAnswers: [],
+      strokesByProblem: [],
+      wb: {
+        tool: 'pen',
+        color: '#1E293B',
+        width: 5,
+        bg: 'grid',
+        isDrawing: false,
+        currentStroke: null
+      }
+    };
+
+    function resetAnswersAndStrokes(keepStrokes = false) {
+      state.userAnswers = PROBLEMS.map(() => ({
+        left: '',
+        right: '',
+        single: '',
+        isCorrect: false,
+        attempted: false,
+        hintOpen: false,
+        solutionOpen: false
+      }));
+      if (!keepStrokes || state.strokesByProblem.length === 0) {
+        state.strokesByProblem = PROBLEMS.map(() => []);
+      }
+    }
+
+    resetAnswersAndStrokes(false);
+
+    // DOM 참조 캐싱
+    const startScreen = document.getElementById('start-screen');
+    const practiceScreen = document.getElementById('practice-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const leaderboardModal = document.getElementById('leaderboard-modal');
+
+    const canvasWrapper = document.getElementById('canvas-wrapper');
+    const canvas = document.getElementById('whiteboard-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // =========================================================
+    // [Firebase] 실시간 리더보드 구독 및 기록 저장
+    // =========================================================
+    function startLeaderboardListener() {
+      if (!db) {
+        state.leaderboardLoading = false;
+        state.leaderboardError = "리더보드 서버에 연결하지 못했습니다.";
+        refreshAllLeaderboardViews();
+        return;
+      }
+
+      // 복합 색인 오류 방지를 위해 단일 컬렉션 전체 구독 후 JS 메모리에서 정렬
+      const lbCol = collection(db, 'leaderboard');
+      onSnapshot(
+        lbCol,
+        (snapshot) => {
+          const list = [];
+          snapshot.forEach((docSnap) => {
+            const d = docSnap.data();
+            list.push({
+              id: docSnap.id,
+              classNum: Number(d.classNum) || 0,
+              studentNum: Number(d.studentNum) || 0,
+              name: String(d.name || '익명'),
+              score: Number(d.score) || 0,
+              timeSec: Number(d.timeSec) || 0,
+              createdAtMs: d.createdAt && typeof d.createdAt.toMillis === 'function'
+                ? d.createdAt.toMillis()
+                : 0
+            });
+          });
+
+          // 1순위: score 내림차순, 2순위: timeSec 오름차순, 3순위: 먼저 등록한 순
+          list.sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            if (a.timeSec !== b.timeSec) return a.timeSec - b.timeSec;
+            return a.createdAtMs - b.createdAtMs;
+          });
+
+          state.leaderboardRecords = list;
+          state.leaderboardLoading = false;
+          state.leaderboardError = '';
+          refreshAllLeaderboardViews();
+        },
+        (error) => {
+          console.error("Firestore 리더보드 구독 오류:", error);
+          state.leaderboardLoading = false;
+          state.leaderboardError = "순위 데이터를 불러오는 중 문제가 발생했어요. 잠시 후 다시 확인해 주세요.";
+          refreshAllLeaderboardViews();
+        }
+      );
+    }
+
+    function formatTimeMMSS(sec) {
+      const s = Math.max(0, Math.floor(sec));
+      const mins = String(Math.floor(s / 60)).padStart(2, '0');
+      const secs = String(s % 60).padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function formatTimeKorean(sec) {
+      const s = Math.max(0, Math.floor(sec));
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      if (m === 0) return `${r}초`;
+      return `${m}분 ${String(r).padStart(2, '0')}초`;
+    }
+
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function buildLeaderboardHTML() {
+      if (state.leaderboardLoading) {
+        return `<div class="p-8 text-center text-xl font-bold text-slate-500">📡 실시간 순위표를 불러오는 중이에요...</div>`;
+      }
+      if (state.leaderboardError) {
+        return `<div class="p-6 rounded-2xl bg-[#FFE4E6] border-2 border-[#FDA4AF] text-[#BE123C] text-center font-bold text-lg">${escapeHTML(state.leaderboardError)}</div>`;
+      }
+
+      const myClass = state.student.classNum;
+      const canFilterMyClass = myClass !== null && !Number.isNaN(myClass);
+      const activeFilter = canFilterMyClass ? state.leaderboardFilter : 'all';
+
+      const filtered = activeFilter === 'myClass'
+        ? state.leaderboardRecords.filter(r => r.classNum === myClass)
+        : state.leaderboardRecords;
+
+      if (state.leaderboardRecords.length === 0) {
+        return `
+          <div class="p-8 rounded-[28px] bg-[#FEFCE8] border-2 border-[#FDE047] text-center space-y-2">
+            <div class="text-4xl">🌟</div>
+            <p class="font-jua text-2xl text-[#854D0E]">아직 실전 모드 도전 기록이 없어요!</p>
+            <p class="text-lg text-[#A16207]">첫 번째로 <strong>실전 모드</strong>에 도전해 명예의 전당 주인공이 되어 보세요!</p>
+          </div>
+        `;
+      }
+
+      const top1 = filtered[0] || null;
+      const top2 = filtered[1] || null;
+      const top3 = filtered[2] || null;
+
+      const filterButtonsHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              data-lb-filter="all"
+              class="pastel-btn px-5 py-2 font-bold text-base sm:text-lg ${
+                activeFilter === 'all'
+                  ? 'bg-[#38BDF8] border-[#0284C7] text-white'
+                  : 'bg-white border-slate-300 text-slate-700'
+              }"
+            >
+              🏫 전체 반 순위 (${state.leaderboardRecords.length}명)
+            </button>
+            ${canFilterMyClass ? `
+              <button
+                type="button"
+                data-lb-filter="myClass"
+                class="pastel-btn px-5 py-2 font-bold text-base sm:text-lg ${
+                  activeFilter === 'myClass'
+                    ? 'bg-[#34D399] border-[#059669] text-white'
+                    : 'bg-white border-slate-300 text-slate-700'
+                }"
+              >
+                🎒 우리 반(${myClass}반)만 보기
+              </button>
+            ` : ''}
+          </div>
+          <span class="text-sm sm:text-base font-bold text-slate-500">
+            정렬 기준: 높은 점수 → 빠른 시간
+          </span>
+        </div>
+      `;
+
+      // 1~3위 금·은·동 시상대
+      const podiumHTML = filtered.length > 0 ? `
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-end pt-2">
+          <!-- 2위 은메달 -->
+          <div class="order-2 sm:order-1 rounded-[26px] p-4 bg-gradient-to-b from-[#F1F5F9] to-[#E2E8F0] border-3 border-[#94A3B8] text-center shadow-sm">
+            <div class="text-3xl mb-1">🥈</div>
+            <div class="inline-block px-3 py-0.5 rounded-full bg-white text-slate-700 font-extrabold text-sm mb-1">2위</div>
+            ${top2 ? `
+              <p class="font-jua text-xl sm:text-2xl text-slate-900 truncate">${escapeHTML(top2.name)}</p>
+              <p class="text-sm font-bold text-slate-600 mb-1">${top2.classNum}반 ${top2.studentNum}번</p>
+              <p class="text-lg font-extrabold text-[#0369A1]">${top2.score}점 · ${formatTimeKorean(top2.timeSec)}</p>
+            ` : `<p class="text-base text-slate-500 py-3">도전자를 기다려요!</p>`}
+          </div>
+
+          <!-- 1위 금메달 -->
+          <div class="order-1 sm:order-2 rounded-[28px] p-5 bg-gradient-to-b from-[#FEF9C3] to-[#FDE047]/60 border-4 border-[#FACC15] text-center shadow-md sm:pb-7">
+            <div class="text-4xl mb-1">🥇</div>
+            <div class="inline-block px-3.5 py-0.5 rounded-full bg-[#FACC15] text-[#713F12] font-extrabold text-sm mb-1">1위 챔피언</div>
+            ${top1 ? `
+              <p class="font-jua text-2xl sm:text-3xl text-slate-900 truncate">${escapeHTML(top1.name)}</p>
+              <p class="text-base font-bold text-[#854D0E] mb-1">${top1.classNum}반 ${top1.studentNum}번</p>
+              <p class="text-xl font-extrabold text-[#B45309]">${top1.score}점 · ${formatTimeKorean(top1.timeSec)}</p>
+            ` : `<p class="text-base text-slate-500 py-3">도전자를 기다려요!</p>`}
+          </div>
+
+          <!-- 3위 동메달 -->
+          <div class="order-3 rounded-[26px] p-4 bg-gradient-to-b from-[#FFEDD5] to-[#FED7AA] border-3 border-[#FB923C] text-center shadow-sm">
+            <div class="text-3xl mb-1">🥉</div>
+            <div class="inline-block px-3 py-0.5 rounded-full bg-white text-[#9A3412] font-extrabold text-sm mb-1">3위</div>
+            ${top3 ? `
+              <p class="font-jua text-xl sm:text-2xl text-slate-900 truncate">${escapeHTML(top3.name)}</p>
+              <p class="text-sm font-bold text-[#9A3412] mb-1">${top3.classNum}반 ${top3.studentNum}번</p>
+              <p class="text-lg font-extrabold text-[#C2410C]">${top3.score}점 · ${formatTimeKorean(top3.timeSec)}</p>
+            ` : `<p class="text-base text-slate-500 py-3">도전자를 기다려요!</p>`}
+          </div>
+        </div>
+      ` : '';
+
+      // 전체 순위표
+      const tableRows = filtered.map((rec, i) => {
+        const rank = i + 1;
+        const isMe = rec.id === state.lastSubmittedDocId ||
+          (state.student.name && rec.classNum === state.student.classNum && rec.studentNum === state.student.number && rec.name === state.student.name);
+        const rankBadge = rank === 1 ? '🥇 1위' : rank === 2 ? '🥈 2위' : rank === 3 ? '🥉 3위' : `${rank}위`;
+
+        return `
+          <tr class="${isMe ? 'bg-[#FEF9C3]/80 font-extrabold' : 'bg-white'} border-b border-slate-200 text-base sm:text-lg">
+            <td class="py-3 px-3 text-center whitespace-nowrap">${rankBadge}</td>
+            <td class="py-3 px-3 text-center whitespace-nowrap">${rec.classNum}반 ${rec.studentNum}번</td>
+            <td class="py-3 px-3 text-center">
+              ${escapeHTML(rec.name)}
+              ${isMe ? '<span class="ml-1.5 px-2 py-0.5 rounded-full bg-[#FACC15] text-[#713F12] text-xs font-extrabold">나</span>' : ''}
+            </td>
+            <td class="py-3 px-3 text-center text-[#059669] font-extrabold whitespace-nowrap">${rec.score} / 9점</td>
+            <td class="py-3 px-3 text-center text-[#2563EB] font-bold whitespace-nowrap">${formatTimeKorean(rec.timeSec)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const tableHTML = filtered.length > 0 ? `
+        <div class="overflow-x-auto rounded-[24px] border-2 border-[#CBD5E1]">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-[#E0F2FE] text-[#0369A1] font-bold text-base sm:text-lg border-b-2 border-[#BAE6FD]">
+                <th class="py-3 px-3 text-center">순위</th>
+                <th class="py-3 px-3 text-center">반 / 번호</th>
+                <th class="py-3 px-3 text-center">이름</th>
+                <th class="py-3 px-3 text-center">점수</th>
+                <th class="py-3 px-3 text-center">걸린 시간</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+        </div>
+      ` : `
+        <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center text-lg font-bold text-slate-500">
+          아직 우리 반 기록이 없어요! 첫 번째 도전자가 되어 보세요 😊
+        </div>
+      `;
+
+      // 🎉 끝까지 완주한 명예의 전당 (시간이 오래 걸려도 9문제를 완주한 모든 학생 표시)
+      const hallOfFameBadges = filtered.map(rec => `
+        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border-2 border-[#C084FC] text-[#6B21A8] font-bold text-base shadow-sm">
+          <span>🏅</span>
+          <span>6학년 ${rec.classNum}반 ${rec.studentNum}번 ${escapeHTML(rec.name)}</span>
+        </span>
+      `).join('');
+
+      const hallOfFameHTML = filtered.length > 0 ? `
+        <div class="rounded-[28px] p-5 sm:p-6 bg-[#FAF5FF] border-3 border-[#D8B4FE]">
+          <h3 class="font-jua text-xl sm:text-2xl text-[#6B21A8] mb-1">
+            🎉 끝까지 완주한 명예의 전당 (총 ${filtered.length}명)
+          </h3>
+          <p class="text-sm sm:text-base text-[#7E22CE] mb-4">
+            점수나 시간에 상관없이 9문제를 끝까지 포기하지 않고 완주한 멋진 친구들이에요! 👏
+          </p>
+          <div class="flex flex-wrap gap-2">
+            ${hallOfFameBadges}
+          </div>
+        </div>
+      ` : '';
+
+      return `${filterButtonsHTML}${podiumHTML}${tableHTML}${hallOfFameHTML}`;
+    }
+
+    function refreshAllLeaderboardViews() {
+      const modalBody = document.getElementById('modal-lb-body');
+      const resultLbContent = document.getElementById('result-lb-content');
+      const html = buildLeaderboardHTML();
+
+      if (modalBody) modalBody.innerHTML = html;
+      if (resultLbContent) resultLbContent.innerHTML = html;
+
+      // 필터 버튼 이벤트 바인딩
+      document.querySelectorAll('[data-lb-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.leaderboardFilter = btn.dataset.lbFilter;
+          refreshAllLeaderboardViews();
+        });
+      });
+    }
+
+    // =========================================================
+    // [1단계] 학생 정보 입력 및 모드별 시작 처리
+    // =========================================================
+    function startSessionWithMode(selectedMode) {
+      const classVal = document.getElementById('input-class').value.trim();
+      const numVal = document.getElementById('input-number').value.trim();
+      const nameVal = document.getElementById('input-name').value.trim();
+      const errorBox = document.getElementById('start-error-msg');
+
+      const parsedClass = parseInt(classVal, 10);
+      const parsedNum = parseInt(numVal, 10);
+
+      if (
+        !classVal ||
+        !numVal ||
+        !nameVal ||
+        Number.isNaN(parsedClass) ||
+        parsedClass < 1 ||
+        parsedClass > 30 ||
+        Number.isNaN(parsedNum) ||
+        parsedNum < 1 ||
+        parsedNum > 60 ||
+        nameVal.length > 15
+      ) {
+        errorBox.classList.remove('hidden');
+        return;
+      }
+
+      errorBox.classList.add('hidden');
+      state.mode = selectedMode;
+      state.student = { classNum: parsedClass, number: parsedNum, name: nameVal };
+      state.lastSubmittedDocId = null;
+      resetAnswersAndStrokes(false);
+
+      const formattedStudent = `6학년 ${parsedClass}반 ${parsedNum}번 이름 : ${nameVal}`;
+      document.getElementById('header-student-info').textContent = formattedStudent;
+      document.getElementById('result-student-banner').textContent = formattedStudent;
+
+      // 모드별 UI 전환
+      setupModeUI();
+
+      startScreen.classList.add('hidden');
+      resultScreen.classList.add('hidden');
+      practiceScreen.classList.remove('hidden');
+      practiceScreen.classList.add('flex');
+
+      renderProblemNav();
+      loadProblem(0);
+      requestAnimationFrame(() => {
+        resizeWhiteboardCanvas();
+      });
+    }
+
+    function setupModeUI() {
+      stopStopwatch();
+      const isChallenge = state.mode === 'challenge';
+
+      // 상단 배너 & 버튼 전환
+      document.getElementById('practice-mode-banner').classList.toggle('hidden', isChallenge);
+      document.getElementById('challenge-timer-banner').classList.toggle('hidden', !isChallenge);
+      document.getElementById('btn-open-result-top').classList.toggle('hidden', isChallenge);
+      document.getElementById('btn-submit-challenge-top').classList.toggle('hidden', !isChallenge);
+
+      // 문제 카드 내부 힌트·정답확인·풀이 버튼 전환
+      document.getElementById('hint-section').classList.toggle('hidden', isChallenge);
+      document.getElementById('practice-action-buttons').classList.toggle('hidden', isChallenge);
+      document.getElementById('challenge-autosave-note').classList.toggle('hidden', !isChallenge);
+      document.getElementById('challenge-confirm-bar').classList.add('hidden');
+
+      if (isChallenge) {
+        state.elapsedSec = 0;
+        document.getElementById('challenge-stopwatch').textContent = `⏱ 00:00`;
+        state.timerInterval = setInterval(() => {
+          state.elapsedSec += 1;
+          document.getElementById('challenge-stopwatch').textContent = `⏱ ${formatTimeMMSS(state.elapsedSec)}`;
+        }, 1000);
+      }
+    }
+
+    function stopStopwatch() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+    }
+
+    // =========================================================
+    // [2단계] 문제 렌더링, 힌트, 정답 검증, 실전 모드 제출
+    // =========================================================
+    function isProblemAnswered(idx) {
+      const prob = PROBLEMS[idx];
+      const rec = state.userAnswers[idx];
+      if (prob.answerType === 'ratio') {
+        return rec.left.trim() !== '' && rec.right.trim() !== '';
+      }
+      return rec.single.trim() !== '';
+    }
+
+    function renderProblemNav() {
+      const nav = document.getElementById('problem-nav');
+      nav.innerHTML = '';
+      const isChallenge = state.mode === 'challenge';
+
+      PROBLEMS.forEach((prob, idx) => {
+        const record = state.userAnswers[idx];
+        const isCurrent = idx === state.currentIndex;
+        const answered = isProblemAnswered(idx);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('aria-label', `${idx + 1}번 문제로 이동`);
+
+        let styleClasses = 'pastel-btn w-11 h-11 sm:w-12 sm:h-12 font-jua text-xl flex items-center justify-center ';
+        if (isCurrent) {
+          styleClasses += 'bg-[#38BDF8] border-[#0284C7] text-white scale-105 shadow-md ';
+        } else if (isChallenge) {
+          if (answered) {
+            styleClasses += 'bg-[#BBF7D0] border-[#34D399] text-[#065F46] ';
+          } else {
+            styleClasses += 'bg-white border-slate-300 text-slate-700 ';
+          }
+        } else {
+          if (record.isCorrect) {
+            styleClasses += 'bg-[#BBF7D0] border-[#34D399] text-[#065F46] ';
+          } else if (record.attempted) {
+            styleClasses += 'bg-[#FEF9C3] border-[#FACC15] text-[#854D0E] ';
+          } else {
+            styleClasses += 'bg-white border-slate-300 text-slate-700 ';
+          }
+        }
+
+        btn.className = styleClasses;
+        if (isChallenge) {
+          btn.innerHTML = answered && !isCurrent ? `${idx + 1}✓` : `${idx + 1}`;
+        } else {
+          btn.innerHTML = record.isCorrect && !isCurrent ? `${idx + 1}★` : `${idx + 1}`;
+        }
+
+        btn.addEventListener('click', () => {
+          saveCurrentInputState();
+          loadProblem(idx);
+        });
+
+        nav.appendChild(btn);
+      });
+
+      // 진행률 업데이트 (연습 모드: 맞힌 수 / 실전 모드: 답 입력 완료 수)
+      if (isChallenge) {
+        const answeredCount = PROBLEMS.filter((_, i) => isProblemAnswered(i)).length;
+        document.getElementById('progress-label').textContent = `답 입력: ${answeredCount} / ${PROBLEMS.length}문제`;
+        document.getElementById('progress-bar').style.width = `${Math.round((answeredCount / PROBLEMS.length) * 100)}%`;
+      } else {
+        const solvedCount = state.userAnswers.filter(a => a.isCorrect).length;
+        document.getElementById('progress-label').textContent = `완료: ${solvedCount} / ${PROBLEMS.length}문제`;
+        document.getElementById('progress-bar').style.width = `${Math.round((solvedCount / PROBLEMS.length) * 100)}%`;
+      }
+    }
+
+    function saveCurrentInputState() {
+      const idx = state.currentIndex;
+      const prob = PROBLEMS[idx];
+      const record = state.userAnswers[idx];
+
+      if (prob.answerType === 'ratio') {
+        record.left = document.getElementById('ans-ratio-left').value;
+        record.right = document.getElementById('ans-ratio-right').value;
+      } else {
+        record.single = document.getElementById('ans-single-val').value;
+      }
+    }
+
+    function loadProblem(index) {
+      state.currentIndex = index;
+      const prob = PROBLEMS[index];
+      const record = state.userAnswers[index];
+      const isChallenge = state.mode === 'challenge';
+
+      document.getElementById('problem-type-badge').textContent = prob.typeBadge;
+      document.getElementById('problem-title').textContent = prob.title;
+      document.getElementById('problem-text').innerHTML = prob.questionHTML;
+
+      // 입력 UI 전환 (비 vs 단일 숫자)
+      const ratioGroup = document.getElementById('input-group-ratio');
+      const singleGroup = document.getElementById('input-group-single');
+
+      if (prob.answerType === 'ratio') {
+        ratioGroup.classList.remove('hidden');
+        singleGroup.classList.add('hidden');
+        document.getElementById('ans-ratio-left').value = record.left;
+        document.getElementById('ans-ratio-right').value = record.right;
+      } else {
+        ratioGroup.classList.add('hidden');
+        singleGroup.classList.remove('hidden');
+        document.getElementById('ans-single-val').value = record.single;
+        document.getElementById('ans-single-unit').innerHTML = prob.unitHTML;
+      }
+
+      // 상태 배지 업데이트
+      updateCurrentProblemStatusBadge();
+
+      // 연습 모드 전용 힌트·풀이 복원
+      const hintBox = document.getElementById('hint-box');
+      const solutionBox = document.getElementById('solution-box');
+      if (!isChallenge) {
+        document.getElementById('hint-text').innerHTML = prob.hintHTML;
+        hintBox.classList.toggle('hidden', !record.hintOpen);
+
+        document.getElementById('solution-answer-badge').textContent = `정답: ${prob.answerDisplay}`;
+        document.getElementById('solution-steps').innerHTML = prob.solutionSteps
+          .map(step => `<p class="bg-white/80 p-3.5 rounded-2xl border border-[#E9D5FF]">${step}</p>`)
+          .join('');
+        solutionBox.classList.toggle('hidden', !record.solutionOpen);
+      } else {
+        hintBox.classList.add('hidden');
+        solutionBox.classList.add('hidden');
+      }
+
+      document.getElementById('feedback-box').classList.add('hidden');
+      document.getElementById('challenge-confirm-bar').classList.add('hidden');
+
+      // 하단 이전 / 다음 / 완료 / 최종 제출 버튼 제어
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const btnFinish = document.getElementById('btn-finish');
+      const btnSubmitChallenge = document.getElementById('btn-submit-challenge');
+
+      btnPrev.disabled = index === 0;
+      if (index === PROBLEMS.length - 1) {
+        btnNext.classList.add('hidden');
+        btnFinish.classList.toggle('hidden', isChallenge);
+        btnSubmitChallenge.classList.toggle('hidden', !isChallenge);
+      } else {
+        btnNext.classList.remove('hidden');
+        btnFinish.classList.add('hidden');
+        btnSubmitChallenge.classList.add('hidden');
+      }
+
+      document.getElementById('clear-confirm-bar').classList.add('hidden');
+      renderProblemNav();
+      redrawWhiteboard();
+    }
+
+    function updateCurrentProblemStatusBadge() {
+      const idx = state.currentIndex;
+      const record = state.userAnswers[idx];
+      const statusBadge = document.getElementById('problem-status-badge');
+
+      if (state.mode === 'challenge') {
+        if (isProblemAnswered(idx)) {
+          statusBadge.textContent = '답 입력 완료 ✓';
+          statusBadge.className = 'px-3.5 py-1 rounded-full bg-[#DCFCE7] text-[#047857] font-bold text-base';
+        } else {
+          statusBadge.textContent = '답을 적어 주세요 ✏️';
+          statusBadge.className = 'px-3.5 py-1 rounded-full bg-slate-100 text-slate-600 font-bold text-base';
+        }
+      } else {
+        if (record.isCorrect) {
+          statusBadge.textContent = '정답 완료! ⭐';
+          statusBadge.className = 'px-3.5 py-1 rounded-full bg-[#DCFCE7] text-[#047857] font-bold text-base';
+        } else if (record.attempted) {
+          statusBadge.textContent = '다시 도전 중 💪';
+          statusBadge.className = 'px-3.5 py-1 rounded-full bg-[#FEF9C3] text-[#854D0E] font-bold text-base';
+        } else {
+          statusBadge.textContent = '도전 중 ✏️';
+          statusBadge.className = 'px-3.5 py-1 rounded-full bg-slate-100 text-slate-600 font-bold text-base';
+        }
+      }
+    }
+
+    function checkSingleProblemGrade(idx) {
+      const prob = PROBLEMS[idx];
+      const rec = state.userAnswers[idx];
+      if (prob.answerType === 'ratio') {
+        const l = rec.left.trim();
+        const r = rec.right.trim();
+        if (l === '' || r === '') return false;
+        return Number(l) === prob.correctRatio[0] && Number(r) === prob.correctRatio[1];
+      } else {
+        const v = rec.single.trim();
+        if (v === '') return false;
+        return Number(v) === prob.correctValue;
+      }
+    }
+
+    function checkCurrentAnswer() {
+      saveCurrentInputState();
+      const idx = state.currentIndex;
+      const record = state.userAnswers[idx];
+      const feedbackBox = document.getElementById('feedback-box');
+
+      feedbackBox.classList.remove('hidden');
+
+      if (!isProblemAnswered(idx)) {
+        feedbackBox.className = 'mt-4 p-4 sm:p-5 rounded-[22px] text-center font-bold text-xl leading-relaxed bg-[#FEF9C3] border-2 border-[#FACC15] text-[#854D0E]';
+        feedbackBox.textContent = '빈칸에 숫자를 먼저 입력해 주세요! 😊';
+        return;
+      }
+
+      record.attempted = true;
+      const isRight = checkSingleProblemGrade(idx);
+
+      if (isRight) {
+        record.isCorrect = true;
+        feedbackBox.className = 'mt-4 p-4 sm:p-5 rounded-[22px] text-center font-bold text-xl leading-relaxed bg-[#DCFCE7] border-2 border-[#34D399] text-[#065F46]';
+        feedbackBox.textContent = '참 잘했어요! 정확하게 풀었네요! 👏';
+        triggerCelebrationParticles();
+      } else {
+        feedbackBox.className = 'mt-4 p-4 sm:p-5 rounded-[22px] text-center font-bold text-xl leading-relaxed bg-[#FFE4E6] border-2 border-[#FDA4AF] text-[#BE123C]';
+        feedbackBox.textContent = '아쉬워요! 화이트보드에서 다시 계산해 보거나 단계별 풀이를 확인해 봐요! 💪';
+      }
+
+      updateCurrentProblemStatusBadge();
+      renderProblemNav();
+    }
+
+    // 실전 모드 최종 제출 요청 및 미응답 문항 체크
+    function requestChallengeSubmit() {
+      saveCurrentInputState();
+      const unansweredCount = PROBLEMS.filter((_, i) => !isProblemAnswered(i)).length;
+
+      if (unansweredCount > 0) {
+        const confirmBar = document.getElementById('challenge-confirm-bar');
+        document.getElementById('challenge-confirm-text').textContent =
+          `아직 답을 적지 않은 문제가 ${unansweredCount}개 있어요! 그대로 제출할까요?`;
+        confirmBar.classList.remove('hidden');
+        return;
+      }
+
+      finalizeChallengeAndSave();
+    }
+
+    async function finalizeChallengeAndSave() {
+      saveCurrentInputState();
+      stopStopwatch();
+
+      // 9문제 전체 자동 채점
+      let totalScore = 0;
+      PROBLEMS.forEach((_, idx) => {
+        const right = checkSingleProblemGrade(idx);
+        state.userAnswers[idx].attempted = true;
+        state.userAnswers[idx].isCorrect = right;
+        if (right) totalScore += 1;
+      });
+
+      const finalTimeSec = Math.max(0, Math.floor(state.elapsedSec));
+
+      // 결과 화면 먼저 표시 후 Firestore에 안전하게 기록 추가 (addDoc만 사용)
+      showResultScreen(totalScore, finalTimeSec);
+
+      const statusEl = document.getElementById('firebase-save-status');
+      statusEl.classList.remove('hidden');
+      statusEl.className = 'mt-4 inline-block px-5 py-2 rounded-full bg-[#F3E8FF] border border-[#D8B4FE] text-[#6B21A8] font-bold text-base sm:text-lg';
+      statusEl.textContent = '📡 실시간 리더보드에 내 기록을 등록하고 있어요...';
+
+      if (!db) {
+        statusEl.className = 'mt-4 inline-block px-5 py-2 rounded-full bg-[#FFE4E6] border border-[#FDA4AF] text-[#BE123C] font-bold text-base sm:text-lg';
+        statusEl.textContent = '⚠️ 네트워크 연결 오류로 서버 등록에 실패했어요.';
+        return;
+      }
+
+      try {
+        const docRef = await addDoc(collection(db, 'leaderboard'), {
+          classNum: Number(state.student.classNum),
+          studentNum: Number(state.student.number),
+          name: String(state.student.name).trim().slice(0, 15),
+          score: Number(totalScore),
+          timeSec: Number(finalTimeSec),
+          createdAt: serverTimestamp()
+        });
+        state.lastSubmittedDocId = docRef.id;
+        statusEl.className = 'mt-4 inline-block px-5 py-2 rounded-full bg-[#DCFCE7] border border-[#6EE7B7] text-[#065F46] font-bold text-base sm:text-lg';
+        statusEl.textContent = '✅ 실시간 리더보드에 내 기록이 등록되었어요!';
+        triggerCelebrationParticles();
+        refreshAllLeaderboardViews();
+      } catch (err) {
+        console.error("Firestore 기록 저장 오류:", err);
+        statusEl.className = 'mt-4 inline-block px-5 py-2 rounded-full bg-[#FFE4E6] border border-[#FDA4AF] text-[#BE123C] font-bold text-base sm:text-lg';
+        statusEl.textContent = '⚠️ 기록 등록 중 오류가 발생했어요. 인터넷 연결을 확인해 주세요.';
+      }
+    }
+
+    // =========================================================
+    // [화이트보드] 고해상도 DPI 대응, 문제별 스트로크 저장, 마우스/터치 지원
+    // =========================================================
+    function resizeWhiteboardCanvas() {
+      const rect = canvasWrapper.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      redrawWhiteboard();
+    }
+
+    function redrawWhiteboard() {
+      const rect = canvasWrapper.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      if (w === 0 || h === 0) return;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const strokes = state.strokesByProblem[state.currentIndex] || [];
+      for (const stroke of strokes) {
+        drawSingleStroke(stroke, w, h);
+      }
+      if (state.wb.currentStroke) {
+        drawSingleStroke(state.wb.currentStroke, w, h);
+      }
+    }
+
+    function drawSingleStroke(stroke, canvasW, canvasH) {
+      if (!stroke || stroke.points.length === 0) return;
+
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (stroke.tool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+        ctx.lineWidth = 24;
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = stroke.color;
+        ctx.lineWidth = stroke.width;
+      }
+
+      ctx.beginPath();
+      const first = stroke.points[0];
+      ctx.moveTo(first.nx * canvasW, first.ny * canvasH);
+
+      if (stroke.points.length === 1) {
+        // 점만 찍었을 때도 표시되도록 짧은 선분 그리기
+        ctx.lineTo(first.nx * canvasW + 0.1, first.ny * canvasH + 0.1);
+      } else {
+        for (let i = 1; i < stroke.points.length; i++) {
+          const pt = stroke.points[i];
+          ctx.lineTo(pt.nx * canvasW, pt.ny * canvasH);
+        }
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function getNormalizedPointerPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+      return {
+        nx: rect.width > 0 ? x / rect.width : 0,
+        ny: rect.height > 0 ? y / rect.height : 0
+      };
+    }
+
+    function handlePointerDown(e) {
+      if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
+      e.preventDefault();
+      canvas.setPointerCapture(e.pointerId);
+
+      const pos = getNormalizedPointerPos(e);
+      state.wb.isDrawing = true;
+      state.wb.currentStroke = {
+        tool: state.wb.tool,
+        color: state.wb.color,
+        width: state.wb.width,
+        points: [pos]
+      };
+      redrawWhiteboard();
+    }
+
+    function handlePointerMove(e) {
+      if (!state.wb.isDrawing || !state.wb.currentStroke) return;
+      e.preventDefault();
+
+      const pos = getNormalizedPointerPos(e);
+      state.wb.currentStroke.points.push(pos);
+      redrawWhiteboard();
+    }
+
+    function handlePointerUp(e) {
+      if (!state.wb.isDrawing) return;
+      if (canvas.hasPointerCapture(e.pointerId)) {
+        canvas.releasePointerCapture(e.pointerId);
+      }
+      if (state.wb.currentStroke) {
+        state.strokesByProblem[state.currentIndex].push(state.wb.currentStroke);
+        state.wb.currentStroke = null;
+      }
+      state.wb.isDrawing = false;
+      redrawWhiteboard();
+    }
+
+    // 화이트보드 도구 버튼 이벤트 바인딩
+    function initWhiteboardControls() {
+      canvas.addEventListener('pointerdown', handlePointerDown);
+      canvas.addEventListener('pointermove', handlePointerMove);
+      canvas.addEventListener('pointerup', handlePointerUp);
+      canvas.addEventListener('pointercancel', handlePointerUp);
+
+      // 펜 색상 선택
+      const colorBtns = document.querySelectorAll('.wb-color-btn');
+      const eraserBtn = document.getElementById('btn-eraser');
+
+      colorBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.wb.tool = 'pen';
+          state.wb.color = btn.dataset.color;
+
+          colorBtns.forEach(b => b.classList.remove('ring-4', 'ring-[#BAE6FD]'));
+          btn.classList.add('ring-4', 'ring-[#BAE6FD]');
+          eraserBtn.classList.remove('ring-4', 'ring-[#FDE047]');
+        });
+      });
+
+      // 지우개 선택
+      eraserBtn.addEventListener('click', () => {
+        state.wb.tool = 'eraser';
+        colorBtns.forEach(b => b.classList.remove('ring-4', 'ring-[#BAE6FD]'));
+        eraserBtn.classList.add('ring-4', 'ring-[#FDE047]');
+      });
+
+      // 펜 굵기 선택
+      const widthBtns = document.querySelectorAll('.wb-width-btn');
+      widthBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.wb.width = parseFloat(btn.dataset.width);
+          widthBtns.forEach(b => {
+            b.classList.remove('bg-[#E0F2FE]', 'border-[#38BDF8]', 'text-[#0369A1]', 'ring-2', 'ring-[#7DD3FC]');
+            b.classList.add('bg-white', 'border-slate-300', 'text-slate-700');
+          });
+          btn.classList.remove('bg-white', 'border-slate-300', 'text-slate-700');
+          btn.classList.add('bg-[#E0F2FE]', 'border-[#38BDF8]', 'text-[#0369A1]', 'ring-2', 'ring-[#7DD3FC]');
+        });
+      });
+
+      // 배경 전환 (모눈종이 / 줄노트 / 백지)
+      const bgBtns = document.querySelectorAll('.wb-bg-btn');
+      bgBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const bgType = btn.dataset.bg;
+          state.wb.bg = bgType;
+
+          canvasWrapper.classList.remove('wb-bg-grid', 'wb-bg-lined', 'wb-bg-blank');
+          canvasWrapper.classList.add(`wb-bg-${bgType}`);
+
+          bgBtns.forEach(b => {
+            b.classList.remove('bg-[#DCFCE7]', 'border-[#34D399]', 'text-[#065F46]', 'ring-2', 'ring-[#6EE7B7]');
+            b.classList.add('bg-white', 'border-slate-300', 'text-slate-700');
+          });
+          btn.classList.remove('bg-white', 'border-slate-300', 'text-slate-700');
+          btn.classList.add('bg-[#DCFCE7]', 'border-[#34D399]', 'text-[#065F46]', 'ring-2', 'ring-[#6EE7B7]');
+        });
+      });
+
+      // 한 단계 되돌리기 (Undo)
+      document.getElementById('btn-undo').addEventListener('click', () => {
+        const strokes = state.strokesByProblem[state.currentIndex];
+        if (strokes && strokes.length > 0) {
+          strokes.pop();
+          redrawWhiteboard();
+        }
+      });
+
+      // 모두 지우기 확인창 토글
+      const clearConfirmBar = document.getElementById('clear-confirm-bar');
+      document.getElementById('btn-clear-ask').addEventListener('click', () => {
+        clearConfirmBar.classList.remove('hidden');
+      });
+      document.getElementById('btn-clear-cancel').addEventListener('click', () => {
+        clearConfirmBar.classList.add('hidden');
+      });
+      document.getElementById('btn-clear-confirm').addEventListener('click', () => {
+        state.strokesByProblem[state.currentIndex] = [];
+        clearConfirmBar.classList.add('hidden');
+        redrawWhiteboard();
+      });
+
+      // 컨테이너 크기 변경 감지로 좌표 어긋남 완벽 방지
+      if (window.ResizeObserver) {
+        const ro = new ResizeObserver(() => {
+          resizeWhiteboardCanvas();
+        });
+        ro.observe(canvasWrapper);
+      }
+      window.addEventListener('resize', resizeWhiteboardCanvas);
+    }
+
+    // =========================================================
+    // [3단계] 학습 결과 & 리더보드 화면 렌더링
+    // =========================================================
+    function showResultScreen(overrideScore = null, overrideTimeSec = null) {
+      saveCurrentInputState();
+      const isChallenge = state.mode === 'challenge';
+
+      practiceScreen.classList.add('hidden');
+      practiceScreen.classList.remove('flex');
+      resultScreen.classList.remove('hidden');
+
+      const solvedCount = overrideScore !== null
+        ? overrideScore
+        : state.userAnswers.filter(a => a.isCorrect).length;
+
+      document.getElementById('result-score-text').textContent = `${solvedCount} / ${PROBLEMS.length} 문제`;
+
+      const modeBadge = document.getElementById('result-mode-badge');
+      const timeCard = document.getElementById('result-time-card');
+      const lbSection = document.getElementById('result-leaderboard-section');
+      const fbStatus = document.getElementById('firebase-save-status');
+
+      if (isChallenge) {
+        const sec = overrideTimeSec !== null ? overrideTimeSec : state.elapsedSec;
+        modeBadge.textContent = '🏆 실전 모드 완료 리포트';
+        timeCard.classList.remove('hidden');
+        document.getElementById('result-time-text').textContent = formatTimeKorean(sec);
+        lbSection.classList.remove('hidden');
+        refreshAllLeaderboardViews();
+      } else {
+        modeBadge.textContent = '🌱 연습 모드 완료 리포트';
+        timeCard.classList.add('hidden');
+        lbSection.classList.add('hidden');
+        fbStatus.classList.add('hidden');
+      }
+
+      const encouragementEl = document.getElementById('result-encouragement');
+      if (solvedCount === PROBLEMS.length) {
+        encouragementEl.textContent = '우와! 9문제를 모두 맞혔어요! 수행평가도 자신 있게 잘 볼 수 있을 거예요! 🏆';
+        triggerCelebrationParticles();
+      } else if (solvedCount >= 6) {
+        encouragementEl.textContent = '정말 잘했어요! 틀린 문제만 아래 해설로 한 번 더 복습하면 완벽해질 거예요! 🌟';
+      } else {
+        encouragementEl.textContent = '끝까지 포기하지 않고 완주한 것이 가장 멋져요! 아래 풀이 해설을 보며 다시 도전해 보자! 💪';
+      }
+
+      // 9문제 전체 정오표 및 단계별 풀이 해설 카드 렌더링
+      const grid = document.getElementById('result-grid');
+      grid.innerHTML = '';
+
+      PROBLEMS.forEach((prob, idx) => {
+        const record = state.userAnswers[idx];
+        let userAnsStr = '미입력';
+
+        if (prob.answerType === 'ratio' && (record.left.trim() !== '' || record.right.trim() !== '')) {
+          userAnsStr = `${record.left || '?'} : ${record.right || '?'}`;
+        } else if (prob.answerType === 'single' && record.single.trim() !== '') {
+          userAnsStr = `${record.single}`;
+        }
+
+        const stepsHTML = prob.solutionSteps
+          .map(step => `<p class="text-sm sm:text-base text-slate-700 leading-relaxed">${step}</p>`)
+          .join('');
+
+        const card = document.createElement('div');
+        card.className = record.isCorrect
+          ? 'rounded-[24px] p-5 bg-[#ECFDF5] border-2 border-[#6EE7B7] flex flex-col justify-between gap-3'
+          : 'rounded-[24px] p-5 bg-[#FFF1F2]/70 border-2 border-[#FDA4AF] flex flex-col justify-between gap-3';
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-jua text-2xl text-slate-800">${prob.title}</span>
+              <span class="px-3 py-1 rounded-full text-sm font-bold ${
+                record.isCorrect
+                  ? 'bg-[#BBF7D0] text-[#065F46]'
+                  : 'bg-[#FFE4E6] text-[#BE123C]'
+              }">
+                ${record.isCorrect ? '⭕ 정답!' : '❌ 오답 복습'}
+              </span>
+            </div>
+            <p class="text-base text-slate-700 mb-1">내가 쓴 답: <strong>${escapeHTML(userAnsStr)}</strong></p>
+            <p class="text-base text-[#0369A1] mb-3">정답: <strong>${prob.answerDisplay}</strong></p>
+
+            <details ${record.isCorrect ? '' : 'open'} class="rounded-2xl bg-white/90 border border-slate-200 p-3">
+              <summary class="cursor-pointer font-bold text-base text-[#6B21A8] select-none">
+                📖 단계별 풀이 해설 보기
+              </summary>
+              <div class="mt-2 pt-2 border-t border-slate-100 space-y-1.5">
+                ${stepsHTML}
+              </div>
+            </details>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // =========================================================
+    // 정답 축하 폭죽·별 파티클 애니메이션
+    // =========================================================
+    function triggerCelebrationParticles() {
+      const celebCanvas = document.getElementById('celebration-canvas');
+      const cCtx = celebCanvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      celebCanvas.width = window.innerWidth * dpr;
+      celebCanvas.height = window.innerHeight * dpr;
+      cCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const colors = ['#38BDF8', '#34D399', '#FACC15', '#F472B6', '#A78BFA'];
+      const particles = [];
+
+      for (let i = 0; i < 65; i++) {
+        particles.push({
+          x: window.innerWidth * 0.35 + (Math.random() - 0.5) * 240,
+          y: window.innerHeight * 0.45,
+          vx: (Math.random() - 0.5) * 14,
+          vy: -Math.random() * 13 - 4,
+          size: Math.random() * 8 + 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 0.25,
+          alpha: 1
+        });
+      }
+
+      let frame = 0;
+      function animate() {
+        frame++;
+        cCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+        let alive = false;
+        for (const p of particles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.38; // 중력
+          p.rotation += p.vRot;
+          p.alpha -= 0.015;
+
+          if (p.alpha > 0) {
+            alive = true;
+            cCtx.save();
+            cCtx.globalAlpha = Math.max(0, p.alpha);
+            cCtx.translate(p.x, p.y);
+            cCtx.rotate(p.rotation);
+            cCtx.fillStyle = p.color;
+            cCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+            cCtx.restore();
+          }
+        }
+
+        if (alive && frame < 110) {
+          requestAnimationFrame(animate);
+        } else {
+          cCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // =========================================================
+    // 전체 이벤트 초기화 (ES Module 안전 실행)
+    // =========================================================
+    function initApp() {
+      // Firebase 실시간 리더보드 구독 시작
+      startLeaderboardListener();
+
+      // 시작 화면 모드 선택 버튼 및 엔터키 처리
+      document.getElementById('btn-start-practice').addEventListener('click', () => startSessionWithMode('practice'));
+      document.getElementById('btn-start-challenge').addEventListener('click', () => startSessionWithMode('challenge'));
+
+      ['input-class', 'input-number', 'input-name'].forEach(id => {
+        document.getElementById(id).addEventListener('keydown', e => {
+          if (e.key === 'Enter') startSessionWithMode('practice');
+        });
+      });
+
+      // 실시간 리더보드 모달 열기/닫기
+      document.querySelectorAll('[data-open-leaderboard]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          refreshAllLeaderboardViews();
+          leaderboardModal.classList.remove('hidden');
+        });
+      });
+      document.getElementById('btn-close-lb-modal').addEventListener('click', () => {
+        leaderboardModal.classList.add('hidden');
+      });
+      leaderboardModal.addEventListener('click', e => {
+        if (e.target === leaderboardModal) {
+          leaderboardModal.classList.add('hidden');
+        }
+      });
+
+      // 힌트 토글 버튼
+      document.getElementById('btn-toggle-hint').addEventListener('click', () => {
+        const record = state.userAnswers[state.currentIndex];
+        record.hintOpen = !record.hintOpen;
+        document.getElementById('hint-box').classList.toggle('hidden', !record.hintOpen);
+      });
+
+      // 풀이 과정 토글 버튼
+      document.getElementById('btn-toggle-solution').addEventListener('click', () => {
+        const record = state.userAnswers[state.currentIndex];
+        record.solutionOpen = !record.solutionOpen;
+        document.getElementById('solution-box').classList.toggle('hidden', !record.solutionOpen);
+      });
+
+      // 정답 확인 버튼 및 입력창 실시간 저장·엔터키 처리
+      document.getElementById('btn-check-answer').addEventListener('click', checkCurrentAnswer);
+      ['ans-ratio-left', 'ans-ratio-right', 'ans-single-val'].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('input', () => {
+          saveCurrentInputState();
+          updateCurrentProblemStatusBadge();
+          renderProblemNav();
+        });
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' && state.mode === 'practice') {
+            checkCurrentAnswer();
+          }
+        });
+      });
+
+      // 이전 / 다음 / 연습 결과 보기 / 실전 최종 제출 버튼
+      document.getElementById('btn-prev').addEventListener('click', () => {
+        if (state.currentIndex > 0) {
+          saveCurrentInputState();
+          loadProblem(state.currentIndex - 1);
+        }
+      });
+
+      document.getElementById('btn-next').addEventListener('click', () => {
+        if (state.currentIndex < PROBLEMS.length - 1) {
+          saveCurrentInputState();
+          loadProblem(state.currentIndex + 1);
+        }
+      });
+
+      document.getElementById('btn-finish').addEventListener('click', () => showResultScreen());
+      document.getElementById('btn-open-result-top').addEventListener('click', () => showResultScreen());
+
+      document.getElementById('btn-submit-challenge').addEventListener('click', requestChallengeSubmit);
+      document.getElementById('btn-submit-challenge-top').addEventListener('click', requestChallengeSubmit);
+      document.getElementById('btn-challenge-confirm-yes').addEventListener('click', finalizeChallengeAndSave);
+      document.getElementById('btn-challenge-confirm-no').addEventListener('click', () => {
+        document.getElementById('challenge-confirm-bar').classList.add('hidden');
+      });
+
+      // 결과 화면 버튼
+      document.getElementById('btn-print-result').addEventListener('click', () => {
+        window.print();
+      });
+
+      document.getElementById('btn-retry-challenge').addEventListener('click', () => {
+        state.mode = 'challenge';
+        state.lastSubmittedDocId = null;
+        resetAnswersAndStrokes(false);
+        setupModeUI();
+        resultScreen.classList.add('hidden');
+        practiceScreen.classList.remove('hidden');
+        practiceScreen.classList.add('flex');
+        renderProblemNav();
+        loadProblem(0);
+        requestAnimationFrame(() => resizeWhiteboardCanvas());
+      });
+
+      document.getElementById('btn-back-to-practice').addEventListener('click', () => {
+        state.mode = 'practice';
+        setupModeUI();
+        resultScreen.classList.add('hidden');
+        practiceScreen.classList.remove('hidden');
+        practiceScreen.classList.add('flex');
+        renderProblemNav();
+        loadProblem(0);
+        requestAnimationFrame(() => resizeWhiteboardCanvas());
+      });
+
+      // 화이트보드 컨트롤 초기화
+      initWhiteboardControls();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+</html>
